@@ -4,13 +4,13 @@ pipeline{
   stages{
       stage('Build') {
         steps {
-          sh 'cd client;yarn install;'
+          sh 'yarn install'
               }
           }
       
       stage('Test') {
         steps {
-          sh 'cd client;npm test -- --coverage;'
+          sh 'npm test -- --coverage'
              }
         }
       stage('Sonarqube analysis') {
