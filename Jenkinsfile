@@ -39,6 +39,15 @@ pipeline{
                 sh 'curl -u ${usr}:${pass} --upload-file build.zip http://18.224.155.110:8081/nexus/content/repositories/devopstraining/Gamification/build-${BUILD_NUMBER}.zip'
               }
            }
+        }
+     stage ('Deploy') {
+            steps {
+               withCredentials([file(credentialsId: 'deployment-server', variable: 'secret_key_for_tomcat')]) {
+                 sh 'scp -i ${secret_key_for_tomcat} -o StrictHostKeyChecking=no build.zip ubuntu@13.232.255.41:~/'
+                  sh 'ssh -i ${secret_key_for_tomcat} -o StrictHostKeyChecking=no ubuntu@13.232.255.41 "cd ~;unzip build.zip;"'
+                  
+               }
+            }
         } 
      }
  }
