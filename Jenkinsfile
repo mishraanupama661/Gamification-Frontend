@@ -2,7 +2,7 @@ pipeline{
   agent any
 
   stages{
-      stage('Installing Dependencies') {
+      /*stage('Installing Dependencies') {
         steps {
           sh 'cd client;npm install;'
               }
@@ -39,13 +39,13 @@ pipeline{
                 sh 'curl -u ${usr}:${pass} --upload-file gamify-front.zip http://18.224.155.110:8081/nexus/content/repositories/devopstraining/Gamification/gamify-front-${BUILD_NUMBER}.zip'
               }
            }
-        }
+        }*/
      stage ('Deploy') {
             steps {
                withCredentials([file(credentialsId: 'deploy-server', variable: 'secret_key_for_tomcat')]) {
-                 sh 'scp -i ${secret_key_for_tomcat} -o StrictHostKeyChecking=no gamify-front.zip ubuntu@13.232.255.41:~/'
-                  sh 'ssh -i ${secret_key_for_tomcat} -o StrictHostKeyChecking=no ubuntu@13.232.255.41 "cd ~;unzip gamify-front.zip;"'
-                  sh 'ssh -v -i ${secret_key_for_tomcat} -o StrictHostKeyChecking=no ubuntu@13.232.255.41 "cd ~;cd gamify-front;ls;npm install;pm2 start "PORT=6000 serve -s build""'
+                 //sh 'scp -i ${secret_key_for_tomcat} -o StrictHostKeyChecking=no gamify-front.zip ubuntu@13.232.255.41:~/'
+                  //sh 'ssh -i ${secret_key_for_tomcat} -o StrictHostKeyChecking=no ubuntu@13.232.255.41 "cd ~;unzip gamify-front.zip;"'
+                  sh 'ssh -i ${secret_key_for_tomcat} -o StrictHostKeyChecking=no ubuntu@13.232.255.41 "cd ~;cd gamify-front;cd client;ls;pm2 start "PORT=6000 serve -s build" --name "gamify";"'
                }
             }
         } 
