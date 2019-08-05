@@ -35,7 +35,7 @@ export default class TeamDashBoard extends Component {
 
   componentWillMount() {
     axios
-      .get("http://localhost:5000/api/dashboard/details/team")
+      .get("http://localhost:8080/dashboard/")
       .then(response => {
         let { data } = response;
         let ds = typeof data === "string" ? JSON.parse(data) : data;
