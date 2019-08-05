@@ -2,7 +2,7 @@ pipeline{
   agent any
 
   stages{
-      /*stage('Installing Dependencies') {
+      stage('Installing Dependencies') {
         steps {
           sh 'cd client;npm install;'
               }
@@ -39,8 +39,8 @@ pipeline{
                 sh 'curl -u ${usr}:${pass} --upload-file gamify-front.zip http://18.224.155.110:8081/nexus/content/repositories/devopstraining/Gamification/gamify-front-${BUILD_NUMBER}.zip'
               }
            }
-        }*/
-     stage ('Deploy') {
+        }
+     /*stage ('Deploy') {
             steps {
                withCredentials([file(credentialsId: 'deploy-server', variable: 'secret_key_for_tomcat')]) {
                  //sh 'scp -i ${secret_key_for_tomcat} -o StrictHostKeyChecking=no gamify-front.zip ubuntu@13.232.255.41:~/'
@@ -48,6 +48,14 @@ pipeline{
                   sh 'ssh -i ${secret_key_for_tomcat} -o StrictHostKeyChecking=no ubuntu@13.232.255.41 "cd ~;cd client;npm run build;PORT=6000 serve -s build;"'
                }
             }
-        } 
-     }
+        }/* 
+   }
+      post {
+        success {
+             slackSend (color: '#00FF00', message: " SUCCESSFUL: Job '${JOB_NAME} [${BUILD_NUMBER}]' (${BUILD_URL})")
+          }
+        failure {
+             slackSend (color: '#FF0000', message: " FAILED: Job '${JOB_NAME} [${BUILD_NUMBER}]' (${BUILD_URL})")
+          }
+ }
  }
