@@ -48,7 +48,7 @@ pipeline{
                   sh 'ssh -i ${secret_key_for_tomcat} -o StrictHostKeyChecking=no ubuntu@13.232.255.41 "cd ~;cd client;npm run build;PORT=6000 serve -s build;"'
                }
             }
-        }/* 
+        }*/ 
    }
       post {
         success {
@@ -57,5 +57,5 @@ pipeline{
         failure {
              slackSend (color: '#FF0000', message: " FAILED: Job '${JOB_NAME} [${BUILD_NUMBER}]' (${BUILD_URL})")
           }
- }
+      }
  }
