@@ -30,7 +30,7 @@ pipeline{
        }
      stage('Zipping') {
        steps {
-         sh 'zip -r gamify-front.zip ./client -x "node_modules"'
+         sh 'cd client;zip -r gamify-front.zip ./build;'
            }
        }
       stage ( 'Artifact to Nexus') {
