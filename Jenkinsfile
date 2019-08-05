@@ -48,8 +48,8 @@ pipeline{
                   sh 'ssh -i ${secret_key_for_tomcat} -o StrictHostKeyChecking=no ubuntu@52.66.189.143 "cd ~;pm2 restart "gamify-front";"'
                }
             }
-        }
-   }*/
+        }*/
+   }
       post {
         success {
              slackSend (color: '#00FF00', message: " SUCCESSFUL: Job '${JOB_NAME} [${BUILD_NUMBER}]' (${BUILD_URL})")
