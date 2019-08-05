@@ -40,7 +40,7 @@ pipeline{
               }
            }
         }
-     stage ('Deploy') {
+     /*stage ('Deploy') {
             steps {
                withCredentials([file(credentialsId: 'gamify-deploy', variable: 'secret_key_for_tomcat')]) {
                  //sh 'cd client;scp -i ${secret_key_for_tomcat} -o StrictHostKeyChecking=no gamify-front.zip ubuntu@52.66.189.143:~/;'
@@ -49,7 +49,7 @@ pipeline{
                }
             }
         }
-   }
+   }*/
       post {
         success {
              slackSend (color: '#00FF00', message: " SUCCESSFUL: Job '${JOB_NAME} [${BUILD_NUMBER}]' (${BUILD_URL})")
