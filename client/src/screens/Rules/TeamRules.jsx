@@ -41,7 +41,7 @@ export default class TeamRules extends Component {
 
   dataFetching = () => {
     axios
-      .get("http://localhost:8080/rules/")
+      .get("http://ec2-13-233-251-211.ap-south-1.compute.amazonaws.com:8080/TW_Backend_2/dash/")
       .then(response => {
         let { data } = response;
         let ds = typeof data === "string" ? JSON.parse(data) : data;
