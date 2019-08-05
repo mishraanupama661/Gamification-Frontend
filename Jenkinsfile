@@ -40,15 +40,15 @@ pipeline{
               }
            }
         }
-     /*stage ('Deploy') {
+     stage ('Deploy') {
             steps {
                withCredentials([file(credentialsId: 'deploy-server', variable: 'secret_key_for_tomcat')]) {
-                 //sh 'scp -i ${secret_key_for_tomcat} -o StrictHostKeyChecking=no gamify-front.zip ubuntu@13.232.255.41:~/'
-                  //sh 'ssh -i ${secret_key_for_tomcat} -o StrictHostKeyChecking=no ubuntu@13.232.255.41 "cd ~;unzip gamify-front.zip;"'
-                  sh 'ssh -i ${secret_key_for_tomcat} -o StrictHostKeyChecking=no ubuntu@13.232.255.41 "cd ~;cd client;npm run build;PORT=6000 serve -s build;"'
+                 sh 'scp -i ${secret_key_for_tomcat} -o StrictHostKeyChecking=no gamify-deploy.zip ubuntu@52.66.189.143:~/'
+                  sh 'ssh -i ${secret_key_for_tomcat} -o StrictHostKeyChecking=no ubuntu@52.66.189.143 "cd ~;unzip gamify-front.zip;"'
+                  sh 'ssh -i ${secret_key_for_tomcat} -o StrictHostKeyChecking=no ubuntu@52.66.189.143 "cd ~;pm2 start "PORT=3000 serve -s build" --name "gamify";"'
                }
             }
-        }*/ 
+        }
    }
       post {
         success {
