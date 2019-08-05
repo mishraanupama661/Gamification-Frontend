@@ -43,7 +43,7 @@ pipeline{
      stage ('Deploy') {
             steps {
                withCredentials([file(credentialsId: 'gamify-deploy', variable: 'secret_key_for_tomcat')]) {
-                 sh 'scp -i ${secret_key_for_tomcat} -o StrictHostKeyChecking=no gamify-deploy.zip ubuntu@52.66.189.143:~/'
+                 sh 'scp -i ${secret_key_for_tomcat} -o StrictHostKeyChecking=no gamify-front.zip ubuntu@52.66.189.143:~/'
                   sh 'ssh -i ${secret_key_for_tomcat} -o StrictHostKeyChecking=no ubuntu@52.66.189.143 "cd ~;unzip gamify-front.zip;"'
                   sh 'ssh -i ${secret_key_for_tomcat} -o StrictHostKeyChecking=no ubuntu@52.66.189.143 "cd ~;pm2 start "PORT=3000 serve -s build" --name "gamify";"'
                }
