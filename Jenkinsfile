@@ -2,13 +2,13 @@ pipeline{
   agent any
 
   stages{
-      /*stage('Installing Dependencies') {
+      stage('Installing Dependencies') {
         steps {
           sh 'cd client;npm install;'
               }
           }
       
-      stage('Test') {
+      /*stage('Test') {
         steps {
           sh 'cd client;npm test -- --coverage;'
              }
@@ -22,18 +22,18 @@ pipeline{
               sh 'cd client;${scannerHome}/bin/sonar-scanner -Dproject.settings=./Sonar.properties;'
                   }
               }
-          }
+          }*/
      stage('Build') {
           steps {
                sh 'cd client;npm run build;'
            }
-       }*/
-     /*stage('Zipping') {
+       }
+     stage('Zipping') {
        steps {
-         sh 'zip -r gamify-front.zip ./client;'
+         sh 'cd client;zip -r build.zip ./build;'
            }
        }
-      stage ( 'Artifact to Nexus') {
+      /*stage ( 'Artifact to Nexus') {
             steps {
                 withCredentials([usernamePassword(credentialsId: 'sudipa_nexus', passwordVariable: 'pass', usernameVariable: 'usr')]){
                 sh 'curl -u ${usr}:${pass} --upload-file gamify-front.zip http://18.224.155.110:8081/nexus/content/repositories/devopstraining/Gamification/gamify-front-${BUILD_NUMBER}.zip;'
@@ -43,7 +43,7 @@ pipeline{
      stage ('Deploy') {
             steps {
                withCredentials([file(credentialsId: 'gamify-deploy', variable: 'secret_key_for_tomcat')]) {
-                 sh 'scp -i ${secret_key_for_tomcat} -o StrictHostKeyChecking=no gamify-front.zip ubuntu@52.66.189.143:~/'
+                 sh 'cd client;scp -i ${secret_key_for_tomcat} -o StrictHostKeyChecking=no build.zip ubuntu@52.66.189.143:~/client/;'
                   //sh 'ssh -i ${secret_key_for_tomcat} -o StrictHostKeyChecking=no ubuntu@52.66.189.143 "cd ~;cd Gamify;unzip gamify-front.zip;"'
                   //sh 'ssh -i ${secret_key_for_tomcat} -o StrictHostKeyChecking=no ubuntu@52.66.189.143 "cd ~;pm2 restart "gamify-front";"'
                }
