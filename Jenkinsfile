@@ -2,13 +2,13 @@ pipeline{
   agent any
 
   stages{
-      /*stage('Installing Dependencies') {
+      stage('Installing Dependencies') {
         steps {
-          sh 'cd client;npm install;'
+          sh 'cd client;yarn install;'
               }
           }
       
-      stage('Test') {
+      /*stage('Test') {
         steps {
           sh 'cd client;npm test -- --coverage;'
              }
@@ -22,15 +22,15 @@ pipeline{
               sh 'cd client;${scannerHome}/bin/sonar-scanner -Dproject.settings=./Sonar.properties;'
                   }
               }
-          }
+          }*/
      stage('Build') {
           steps {
                sh 'cd client;npm run build;'
            }
-       }*/
+       }
      stage('Zipping') {
        steps {
-         sh 'zip -r gamify-front1.zip ./client;'
+         sh 'cd client;zip -r build.zip ./build;'
            }
        }
       /*stage ( 'Artifact to Nexus') {
@@ -43,9 +43,9 @@ pipeline{
      stage ('Deploy') {
             steps {
                withCredentials([file(credentialsId: 'gamify-deploy', variable: 'secret_key_for_tomcat')]) {
-                 sh 'scp -i ${secret_key_for_tomcat} -o StrictHostKeyChecking=no gamify-front1.zip ubuntu@52.66.189.143:~/;'
-                  sh 'ssh -i ${secret_key_for_tomcat} -o StrictHostKeyChecking=no ubuntu@52.66.189.143 "cd ~;unzip gamify-front1.zip;"'
-                  sh 'ssh -i ${secret_key_for_tomcat} -o StrictHostKeyChecking=no ubuntu@52.66.189.143 "cd ~;ls;"'
+                 sh 'cd client;scp -i ${secret_key_for_tomcat} -o StrictHostKeyChecking=no build.zip ubuntu@52.66.189.143:~/client/;'
+                  sh 'ssh -i ${secret_key_for_tomcat} -o StrictHostKeyChecking=no ubuntu@52.66.189.143 "cd ~;cd client;unzip build.zip;"'
+                  sh 'ssh -i ${secret_key_for_tomcat} -o StrictHostKeyChecking=no ubuntu@52.66.189.143 "cd ~;cd client;PORT=3000 serve -s build;"'
                }
             }
         }
