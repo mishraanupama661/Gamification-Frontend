@@ -41,7 +41,7 @@ export default class TeamRules extends Component {
 
   dataFetching = () => {
     axios
-      .get("/api/dashboard/rules/team")
+      .get("http://localhost:8080/rules/")
       .then(response => {
         let { data } = response;
         let ds = typeof data === "string" ? JSON.parse(data) : data;
