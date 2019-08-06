@@ -47,10 +47,10 @@ pipeline{
            }
         }
      }
-    /*stage ('Deploy') {
+    /*stage ('Deploying the artifact') {
             steps {
                withCredentials([file(credentialsId: 'gamify-deploy', variable: 'secret_key_for_tomcat')]) {
-                 sh 'cd client;scp -i ${secret_key_for_tomcat} -o StrictHostKeyChecking=no build.zip ubuntu@52.66.189.143:~/;'
+                 sh 'cd client;scp -i ${secret_key_for_tomcat} -o StrictHostKeyChecking=no build-${BUILD_NUMBER}.zip ubuntu@52.66.189.143:~/;'
                   //sh 'ssh -i ${secret_key_for_tomcat} -o StrictHostKeyChecking=no ubuntu@52.66.189.143 "cd ~;cd Gamify;unzip gamify-front.zip;"'
                   //sh 'ssh -i ${secret_key_for_tomcat} -o StrictHostKeyChecking=no ubuntu@52.66.189.143 "cd ~;pm2 restart "gamify-front";"'
                }
