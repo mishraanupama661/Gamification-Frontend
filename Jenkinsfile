@@ -43,7 +43,7 @@ pipeline{
     stage('Downloading artifact from Nexus for deployment') {
       steps {
            withCredentials([usernamePassword(credentialsId: 'sudipa_nexus', passwordVariable: 'pass', usernameVariable: 'usr')]){
-             sh 'curl -u ${usr}:{pass} http://18.224.155.110:8081/nexus/content/repositories/devopstraining/Gamification/build-${BUILD_NUMBER}.zip  \ --output build-${BUILD_NUMBER}.zip'
+             sh 'curl -u ${usr}:{pass} http://18.224.155.110:8081/nexus/content/repositories/devopstraining/Gamification/build-${BUILD_NUMBER}.zip --output build-${BUILD_NUMBER}.zip'
            }
         }
      }
