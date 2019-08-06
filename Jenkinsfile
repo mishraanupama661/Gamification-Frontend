@@ -2,11 +2,11 @@ pipeline{
   agent any
 
   stages{
-  /*    stage('Installing Dependencies') {
+     stage('Installing Dependencies') {
         steps {
           sh 'cd client;npm install;'
               }
-          }*/
+          }
       
       /*stage('Test') {
         steps {
