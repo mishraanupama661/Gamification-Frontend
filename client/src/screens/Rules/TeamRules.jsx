@@ -21,19 +21,26 @@ export default class TeamRules extends Component {
     super(props);
     this.state = {
       teamRules: {},
+      newRule1: "",
       openModal: false,
       loading: true,
       loaderContent: "Loading...",
       newRule: {
-        name: "Test",
-        metric: "No. of tests executed",
-        threshold: 0.8,
-        mName: "testsExec",
-        operator: "gt",
-        reward: 10
+        name: "",
+        metric: "",
+        threshold: 0 ,
+        mName: "",
+        operator: "",
+        reward: 0
       }
     };
   }
+
+  //handleChange = event => {
+    //this.setState({
+      //[event.target.id]: event.target.value
+    //});
+  //}
 
   componentDidMount() {
     this.dataFetching();
@@ -41,7 +48,7 @@ export default class TeamRules extends Component {
 
   dataFetching = () => {
     axios
-      .get("http://ec2-13-233-251-211.ap-south-1.compute.amazonaws.com:8080/TW_Backend_2/dash/")
+      .get("/api/dashboard/rules/team")
       .then(response => {
         let { data } = response;
         let ds = typeof data === "string" ? JSON.parse(data) : data;
@@ -57,17 +64,16 @@ export default class TeamRules extends Component {
 
   // add a rule
   addRule() {
-    let rule = [];
-    rule.push(this.state.newRule);
+    let { newRule } = this.state;
     this.setState({
       openModal: false,
       loaderContent: "Applying rule",
       loading: true
     });
+    console.log("rule",newRule);
     axios
       .post("/api/addRule", {
-        rule,
-        role: "team"
+        newRule
       })
       .then(response => {
         if (response) {
@@ -78,12 +84,25 @@ export default class TeamRules extends Component {
           this.successAlert("Rule applied successfully");
           this.dataFetching();
         }
+
       })
       .catch(error => {
-        this.failureAlert("Rule appliction failed");
+        this.failureAlert("Rule application failed");
         return error;
       });
   }
+    
+  ruleValidation = () => {
+    axios
+      .get("/api/dashboard/reset/team")
+      .then(response => {
+        let { data } = response;
+        let ds = typeof data === "string" ? JSON.parse(data) : data;
+        if (response.data === "Rule Exists"){
+          this.failureAlert("Rule Exists");
+        }
+    })
+  };
 
   resetData = () => {
     axios
@@ -124,6 +143,7 @@ export default class TeamRules extends Component {
 
   render() {
     let { teamRules, newRule } = this.state;
+    console.log(this.state.newRule.name, 'my')
     return (
       <LandingPage activeName="teamRules">
         <Grid>
@@ -182,7 +202,14 @@ export default class TeamRules extends Component {
                   <p style={{ textAlign: "left" }}>Rule name:</p>
                 </Grid.Column>
                 <Grid.Column width={6}>
-                  <Input placeholder="Rule name" value={newRule.name} />
+                  <Input placeholder="Rule name" defaultValue={newRule.name}  
+                  onChange={e => {
+                    let copy = {...this.state.newRule}
+                    copy.name = e.target.value
+                     this.setState({
+                      newRule:copy
+                    }); 
+                   }}  />
                 </Grid.Column>
                 <Grid.Column width={2} />
               </Grid.Row>
@@ -194,8 +221,15 @@ export default class TeamRules extends Component {
                 <Grid.Column width={6}>
                   <Input
                     placeholder="Rule Description"
-                    value={newRule.metric}
-                  />
+                    defaultValue={newRule.metric}
+                    onChange={e => {
+                      let copy = {...this.state.newRule}
+                      copy.metric = e.target.value
+                       this.setState({
+                        newRule:copy
+                      }); 
+                     }}  />
+                  
                 </Grid.Column>
                 <Grid.Column width={2} />
               </Grid.Row>
@@ -205,7 +239,14 @@ export default class TeamRules extends Component {
                   <p style={{ textAlign: "left" }}>Metric name:</p>
                 </Grid.Column>
                 <Grid.Column width={6}>
-                  <Input placeholder="Metric name" value={newRule.mName} />
+                  <Input placeholder="Metric name" defaultValue={newRule.mName}  
+                  onChange={e => {
+                    let copy = {...this.state.newRule}
+                    copy.mName = e.target.value
+                     this.setState({
+                      newRule:copy
+                    }); 
+                   }}  />
                 </Grid.Column>
                 <Grid.Column width={2} />
               </Grid.Row>
@@ -215,7 +256,14 @@ export default class TeamRules extends Component {
                   <p style={{ textAlign: "left" }}>Operator</p>
                 </Grid.Column>
                 <Grid.Column width={6}>
-                  <Input placeholder="Operator" value={newRule.operator} />
+                  <Input placeholder="Operator" defaultValue={newRule.operator}  
+                  onChange={e => {
+                    let copy = {...this.state.newRule}
+                    copy.operator = e.target.value
+                     this.setState({
+                      newRule:copy
+                    }); 
+                   }}  />
                 </Grid.Column>
                 <Grid.Column width={2} />
               </Grid.Row>
@@ -225,7 +273,14 @@ export default class TeamRules extends Component {
                   <p style={{ textAlign: "left" }}>Threshold</p>
                 </Grid.Column>
                 <Grid.Column width={6}>
-                  <Input placeholder="Threshold" value={newRule.threshold} />
+                  <Input placeholder="Threshold" defaultValue={newRule.threshold}  
+                  onChange={e => {
+                    let copy = {...this.state.newRule}
+                    copy.threshold = e.target.value
+                     this.setState({
+                      newRule:copy
+                    }); 
+                   }}  />
                 </Grid.Column>
                 <Grid.Column width={2} />
               </Grid.Row>
@@ -235,7 +290,14 @@ export default class TeamRules extends Component {
                   <p style={{ textAlign: "left" }}>Reward</p>
                 </Grid.Column>
                 <Grid.Column width={6}>
-                  <Input placeholder="Reward" value={newRule.reward} />
+                  <Input placeholder="Reward" defaultValue={newRule.reward}  
+                  onChange={e => {
+                    let copy = {...this.state.newRule}
+                    copy.reward = e.target.value
+                     this.setState({
+                      newRule:copy
+                    }); 
+                   }}  />
                 </Grid.Column>
                 <Grid.Column width={2} />
               </Grid.Row>
