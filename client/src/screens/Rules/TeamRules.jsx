@@ -72,9 +72,9 @@ export default class TeamRules extends Component {
     });
     console.log("rule",newRule);
     axios
-      .post("/api/addRule", {
+      .post("/api/addRule",
         newRule
-      })
+      )
       .then(response => {
         if (response) {
           this.setState({
@@ -143,7 +143,6 @@ export default class TeamRules extends Component {
 
   render() {
     let { teamRules, newRule } = this.state;
-    console.log(this.state.newRule.name, 'my')
     return (
       <LandingPage activeName="teamRules">
         <Grid>
