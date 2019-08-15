@@ -48,7 +48,7 @@ export default class TeamRules extends Component {
 
   dataFetching = () => {
     axios
-      .get("/api/dashboard/rules/team")
+      .get("http://ec2-52-66-245-186.ap-south-1.compute.amazonaws.com:8080/TW_Backend_Rule/rule/")
       .then(response => {
         let { data } = response;
         let ds = typeof data === "string" ? JSON.parse(data) : data;
@@ -72,7 +72,7 @@ export default class TeamRules extends Component {
     });
     console.log("rule",newRule);
     axios
-      .post("/api/addRule",
+      .post("http://ec2-52-66-245-186.ap-south-1.compute.amazonaws.com:8080/TW_Backend_Rule/rule/",
         newRule
       )
       .then(response => {
@@ -84,21 +84,15 @@ export default class TeamRules extends Component {
           this.successAlert("Rule applied successfully");
           this.dataFetching();
         }
-
+      if(response === "Sorry same name exists") {
+        this.successAlert("Rule already exists");
+        this.dataFetching();
+       }
       })
       .catch(error => {
         this.failureAlert("Rule application failed");
         return error;
       });
-    axios
-      .get("/api/dashboard/reset/team")
-      .then(response => {
-        let { data } = response;
-        let ds = typeof data === "string" ? JSON.parse(data) : data;
-        if (response.data === "Rule Exists"){
-          this.failureAlert("Rule Exists");
-        }
-    });
   }
 
   resetData = () => {
