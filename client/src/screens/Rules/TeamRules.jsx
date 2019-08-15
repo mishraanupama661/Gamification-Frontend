@@ -90,9 +90,6 @@ export default class TeamRules extends Component {
         this.failureAlert("Rule application failed");
         return error;
       });
-  }
-    
-  ruleValidation = () => {
     axios
       .get("/api/dashboard/reset/team")
       .then(response => {
@@ -101,8 +98,8 @@ export default class TeamRules extends Component {
         if (response.data === "Rule Exists"){
           this.failureAlert("Rule Exists");
         }
-    })
-  };
+    });
+  }
 
   resetData = () => {
     axios
