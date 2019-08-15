@@ -2,13 +2,13 @@ pipeline{
   agent any
 
   stages{
-     stage('Installing Dependencies') {
+     /*stage('Installing Dependencies') {
         steps {
           sh 'cd client;npm install;'
               }
           }
       
-      /*stage('Test') {
+      stage('Test') {
         steps {
           sh 'cd client;npm test -- --coverage;'
              }
@@ -22,15 +22,15 @@ pipeline{
               sh 'cd client;${scannerHome}/bin/sonar-scanner -Dproject.settings=./Sonar.properties;'
                   }
               }
-          }*/
+          }
      stage('Build') {
           steps {
                sh 'cd client;npm run build;'
            }
-       }
+       }*/
      stage('Zipping') {
        steps {
-         sh 'cd client;zip -r build.zip ./build;'
+         sh 'zip -r build.zip ./client;'
            }
        }
       stage ('Artifact to Nexus') {
