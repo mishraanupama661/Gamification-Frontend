@@ -30,7 +30,7 @@ pipeline{
        }
      stage('Zipping') {
        steps {
-         sh 'cd client;zip -r build.zip ./client;'
+         sh 'cd client;zip -r build.zip ./build;'
            }
        }
       stage ('Artifact to Nexus') {
