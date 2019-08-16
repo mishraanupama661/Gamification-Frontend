@@ -72,7 +72,7 @@ export default class TeamRules extends Component {
     });
     //console.log("rule",newRule);
     axios
-      .post("http://localhost:9003/rules/", 
+      .post("http://ec2-52-66-245-186.ap-south-1.compute.amazonaws.com:8080/TW_Backend_Rule/rule/", 
         newRule
       )
       .then(response => {
