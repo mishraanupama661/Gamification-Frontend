@@ -70,24 +70,29 @@ export default class TeamRules extends Component {
       loaderContent: "Applying rule",
       loading: true
     });
-    console.log("rule",newRule);
+    //console.log("rule",newRule);
     axios
-      .post("http://ec2-52-66-245-186.ap-south-1.compute.amazonaws.com:8080/TW_Backend_Rule/rule/",
+      .post("http://localhost:9003/rules/", 
         newRule
       )
       .then(response => {
-        if (response) {
+        console.log("my response",response.data);
+        if (response.data === "Sorry same name exists") {
           this.setState({
             loading: false,
             loaderContent: "Loading..."
           });
-          this.successAlert("Rule applied successfully");
+          this.failureAlert("Rule already exists");
           this.dataFetching();
         }
-      if(response === "Sorry same name exists") {
-        this.successAlert("Rule already exists");
+        else {
+        this.setState({
+          loading: false,
+          loaderContent: "Loading..."
+        });
+        this.successAlert("Rule applied successfully");
         this.dataFetching();
-       }
+      }
       })
       .catch(error => {
         this.failureAlert("Rule application failed");
