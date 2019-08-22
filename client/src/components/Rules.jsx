@@ -44,11 +44,11 @@ export default class TeamRules extends Component {
                           <Feed.User
                             style={{ color: "#1c4598", fontWeight: "bold" }}
                           >
-                            {rule.metric}
+                            {rule.mName}
                           </Feed.User>{" "}
                         </Feed.Summary>
                         <Feed.Meta style={{ margin: "0%", fontSize: "13px" }}>
-                          <Feed.Like>{rule.name}</Feed.Like>
+                          <Feed.Like>{rule.toolName}</Feed.Like>
                         </Feed.Meta>
                         <Feed.Extra>Threshold : {rule.threshold}</Feed.Extra>
                       </Feed.Content>
