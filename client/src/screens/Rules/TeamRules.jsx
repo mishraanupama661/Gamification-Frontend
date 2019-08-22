@@ -7,6 +7,7 @@ import {
   Header,
   Input,
   Button,
+  Dropdown,
   Loader
 } from "semantic-ui-react";
 import LandingPage from "./../LandingPage/LandingPage.jsx";
@@ -21,26 +22,24 @@ export default class TeamRules extends Component {
     super(props);
     this.state = {
       teamRules: {},
-      newRule1: "",
       openModal: false,
       loading: true,
       loaderContent: "Loading...",
+      toolNames:[
+        { name: 'SCM',  metrics: ['commitCount']},
+        { name: 'Code Quality', metrics: ['blockerViolations', 'codeCoverage', 'criticalViolations']},
+      ],
+      selectedTool: 'SCM',
       newRule: {
         name: "",
-        metric: "",
+        toolName: "SCM",
+        mName: "commitCount",
         threshold: 0 ,
-        mName: "",
-        operator: "",
+        operator: ">", 
         reward: 0
       }
     };
   }
-
-  //handleChange = event => {
-    //this.setState({
-      //[event.target.id]: event.target.value
-    //});
-  //}
 
   componentDidMount() {
     this.dataFetching();
@@ -62,6 +61,27 @@ export default class TeamRules extends Component {
       });
   };
 
+  handleChange = (e) => {
+    //console.log(this.state)
+    this.setState({selectedTool: e.target.value})
+    this.state.newRule.toolName = e.target.value
+  }
+
+  resetRule() {
+    let copy = {...this.state.newRule}
+      copy.name= ""
+      copy.toolName= "SCM",
+      copy.mName= "commitCount",
+      copy.threshold= 0 ,
+      copy.operator= ">", 
+      copy.reward= 0
+      this.setState({
+        newRule:copy
+      });
+    
+    //console.log("Resetting",this.state.newRule)
+  }
+
   // add a rule
   addRule() {
     let { newRule } = this.state;
@@ -70,13 +90,13 @@ export default class TeamRules extends Component {
       loaderContent: "Applying rule",
       loading: true
     });
-    //console.log("rule",newRule);
+    console.log("rule",newRule);
     axios
       .post("http://ec2-52-66-245-186.ap-south-1.compute.amazonaws.com:8080/TW_Backend_Rule/rule/", 
         newRule
       )
       .then(response => {
-        console.log("my response",response.data);
+        //console.log("my response",response.data);
         if (response.data === "Sorry same name exists") {
           this.setState({
             loading: false,
@@ -84,6 +104,7 @@ export default class TeamRules extends Component {
           });
           this.failureAlert("Rule already exists");
           this.dataFetching();
+          this.resetRule();
         }
         else {
         this.setState({
@@ -92,6 +113,7 @@ export default class TeamRules extends Component {
         });
         this.successAlert("Rule applied successfully");
         this.dataFetching();
+        this.resetRule();
       }
       })
       .catch(error => {
@@ -99,10 +121,10 @@ export default class TeamRules extends Component {
         return error;
       });
   }
-
+ 
   resetData = () => {
     axios
-      .get("/api/dashboard/reset/team")
+      .get("http://localhost:5058/rule/")
       .then(response => {
         if (response.data === "Reset success") {
           axios
@@ -137,8 +159,15 @@ export default class TeamRules extends Component {
     toast.warn(message);
   }
 
+  //handleChange = (e, { value }) => this.setState({ value })
+
   render() {
-    let { teamRules, newRule } = this.state;
+    let tool = this.state.toolNames.filter(tool => {
+      return tool.name === this.state.selectedTool
+    })
+    const { value } = this.state;
+    let { teamRules } = this.state;
+    //console.log("Metric",{metric})
     return (
       <LandingPage activeName="teamRules">
         <Grid>
@@ -194,10 +223,10 @@ export default class TeamRules extends Component {
               <Grid.Row>
                 <Grid.Column width={4} />
                 <Grid.Column width={4}>
-                  <p style={{ textAlign: "left" }}>Rule name:</p>
+                  <p style={{ textAlign: "left" }}>Rule Name</p>
                 </Grid.Column>
                 <Grid.Column width={6}>
-                  <Input placeholder="Rule name" defaultValue={newRule.name}  
+                  <Input placeholder="Rule Name" value={this.state.newRule.name}  
                   onChange={e => {
                     let copy = {...this.state.newRule}
                     copy.name = e.target.value
@@ -211,37 +240,39 @@ export default class TeamRules extends Component {
               <Grid.Row>
                 <Grid.Column width={4} />
                 <Grid.Column width={4}>
-                  <p style={{ textAlign: "left" }}>Rule Description</p>
+                  <p style={{ textAlign: "left" }}>Tool name:</p>
                 </Grid.Column>
                 <Grid.Column width={6}>
-                  <Input
-                    placeholder="Rule Description"
-                    defaultValue={newRule.metric}
-                    onChange={e => {
-                      let copy = {...this.state.newRule}
-                      copy.metric = e.target.value
-                       this.setState({
-                        newRule:copy
-                      }); 
-                     }}  />
-                  
+                  <select value={this.state.selectedTool} onChange={this.handleChange.bind(this)}>
+                  {
+                  this.state.toolNames.map((tool, i) => {
+                  return <option>{tool.name}</option>
+                  })
+                  }
+                 </select>
                 </Grid.Column>
                 <Grid.Column width={2} />
               </Grid.Row>
               <Grid.Row>
                 <Grid.Column width={4} />
                 <Grid.Column width={4}>
-                  <p style={{ textAlign: "left" }}>Metric name:</p>
+                  <p style={{ textAlign: "left" }}>Metric</p>
                 </Grid.Column>
                 <Grid.Column width={6}>
-                  <Input placeholder="Metric name" defaultValue={newRule.mName}  
-                  onChange={e => {
-                    let copy = {...this.state.newRule}
-                    copy.mName = e.target.value
-                     this.setState({
-                      newRule:copy
-                    }); 
-                   }}  />
+                <select defaultValue={this.state.newRule.mName}
+                 onChange={e => {
+                  let copy = {...this.state.newRule}
+                  copy.mName=e.target.value
+                   this.setState({
+                    newRule:copy
+                  }); 
+                 }}>
+                  {
+                  tool[0].metrics.map((metric, i) => {
+                  return <option>{metric}</option>
+                  })
+                  }
+                </select>  
                 </Grid.Column>
                 <Grid.Column width={2} />
               </Grid.Row>
@@ -251,14 +282,19 @@ export default class TeamRules extends Component {
                   <p style={{ textAlign: "left" }}>Operator</p>
                 </Grid.Column>
                 <Grid.Column width={6}>
-                  <Input placeholder="Operator" defaultValue={newRule.operator}  
-                  onChange={e => {
-                    let copy = {...this.state.newRule}
-                    copy.operator = e.target.value
-                     this.setState({
-                      newRule:copy
-                    }); 
-                   }}  />
+                <select 
+                 value={this.state.newRule.operator} 
+                 onChange={e => {
+                  let copy = {...this.state.newRule}
+                  copy.operator=e.target.value
+                   this.setState({
+                    newRule:copy
+                  }); 
+                 }} 
+                >
+                <option value=">">greater than</option>
+                <option value="<=">less than or equal to</option>
+                </select>           
                 </Grid.Column>
                 <Grid.Column width={2} />
               </Grid.Row>
@@ -268,7 +304,7 @@ export default class TeamRules extends Component {
                   <p style={{ textAlign: "left" }}>Threshold</p>
                 </Grid.Column>
                 <Grid.Column width={6}>
-                  <Input placeholder="Threshold" defaultValue={newRule.threshold}  
+                  <Input placeholder="Threshold" value={this.state.newRule.threshold}  
                   onChange={e => {
                     let copy = {...this.state.newRule}
                     copy.threshold = e.target.value
@@ -285,7 +321,7 @@ export default class TeamRules extends Component {
                   <p style={{ textAlign: "left" }}>Reward</p>
                 </Grid.Column>
                 <Grid.Column width={6}>
-                  <Input placeholder="Reward" defaultValue={newRule.reward}  
+                  <Input placeholder="Reward" value={this.state.newRule.reward}  
                   onChange={e => {
                     let copy = {...this.state.newRule}
                     copy.reward = e.target.value
