@@ -32,7 +32,7 @@ export default class TeamRules extends Component {
       selectedTool: 'SCM',
       newRule: {
         name: "",
-        toolName: "SCM",
+        toolName: "scm:Scm",
         mName: "commitCount",
         threshold: 0 ,
         operator: ">", 
@@ -64,13 +64,21 @@ export default class TeamRules extends Component {
   handleChange = (e) => {
     //console.log(this.state)
     this.setState({selectedTool: e.target.value})
-    this.state.newRule.toolName = e.target.value
+    //this.state.newRule.toolName = e.target.value
+    if(e.target.value === "Code Quality")
+    {
+      this.state.newRule.toolName="sonar:Sonar"
+    }
+    else
+    {
+      this.state.newRule.toolName="scm:Scm"
+    }
   }
 
   resetRule() {
     let copy = {...this.state.newRule}
       copy.name= ""
-      copy.toolName= "SCM",
+      copy.toolName= "scm:Scm",
       copy.mName= "commitCount",
       copy.threshold= 0 ,
       copy.operator= ">", 
