@@ -27,7 +27,7 @@ export default class TeamRules extends Component {
       loaderContent: "Loading...",
       toolNames:[
         { name: 'SCM',  metrics: ['commitCount']},
-        { name: 'Code Quality', metrics: ['blockerViolations', 'codeCoverage', 'criticalViolations']},
+        { name: 'Code Quality', metrics: ['blockerViolations', 'coverage', 'criticalViolations']},
       ],
       selectedTool: 'SCM',
       newRule: {
