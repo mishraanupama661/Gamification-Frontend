@@ -1,53 +1,50 @@
-pipeline{
-  agent any
+#!/usr/bin/env groovy
 
-  stages{
-     stage('Installing Dependencies') {
+@Library('pipeline-library-demo')_
+
+pipeline{
+
+   agent any
+   
+   stages {
+   
+      stage ('Installing Dependencies') {
         steps {
-          sh 'cd client;npm install;'
-              }
-          }
-      
-      /*stage('Test') {
-        steps {
-          sh 'cd client;npm test -- --coverage;'
-             }
+          dependency()
+          } 
         }
-      stage('Sonarqube analysis') {
-               environment {
+      stage ('Testing') {
+        steps {
+          test()
+          }
+        }
+      stage ('SonarQube Analysis') {
+        environment {
                  scannerHome=tool 'sonar scanner'
             }
-              steps { 
-                   withSonarQubeEnv('Sonar') {
-              sh 'cd client;${scannerHome}/bin/sonar-scanner -Dproject.settings=./Sonar.properties;'
-                  }
-              }
+        steps {
+          sonar()
           }
-    stage("Quality Gate") {
-            steps {
-              timeout(time: 1, unit: 'HOURS') {
-                waitForQualityGate abortPipeline: true
-              }
-            }
-       }*/
-     stage('Build') {
-          steps {
-               sh 'cd client;npm run build;'
-           }
-       }
-     stage('Zipping') {
-       steps {
-         sh 'cd client;zip -r build.zip ./build;'
-           }
-       }
-      stage ('Artifact to Nexus') {
-            steps {
-                withCredentials([usernamePassword(credentialsId: 'sudipa_nexus', passwordVariable: 'pass', usernameVariable: 'usr')]){
-                sh 'cd client;curl -u ${usr}:${pass} --upload-file build.zip http://18.224.155.110:8081/nexus/content/repositories/devopstraining/Gamification/build-${BUILD_NUMBER}.zip;'
-              }
-           }
+        }        
+      stage ('Production Build') {
+        steps {
+          building()
+          }
         }
-    stage ('Deploying the artifact from nexus to Deployment  server') {
+      stage ('Zipping the build') {
+        steps {
+          zipping()
+          }
+        }
+      stage ('Artifactory to Nexus') {
+        steps {
+          nexus()
+          }
+        }
+     }
+   }
+
+    /*stage ('Deploying the artifact from nexus to Deployment  server') {
             steps {
                withCredentials([file(credentialsId: 'gamify-deploy', variable: 'secret_key_for_tomcat')]) {
                  withCredentials([usernamePassword(credentialsId: 'sudipa_nexus', passwordVariable: 'pass', usernameVariable: 'usr')]){
@@ -59,12 +56,12 @@ pipeline{
             }
         }
    }
-      /*post {
+      post {
         success {
              slackSend (color: '#00FF00', message: " SUCCESSFUL: Job '${JOB_NAME} [${BUILD_NUMBER}]' (${BUILD_URL})")
           }
         failure {
              slackSend (color: '#FF0000', message: " FAILED: Job '${JOB_NAME} [${BUILD_NUMBER}]' (${BUILD_URL})")
           }
-      }*/
-  }
+      }
+  }*/
